@@ -113,7 +113,7 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		BuscaObras();
+		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO();
 	} else {
 		$("#divDespesasFinanceiro").slideUp();
 	}
@@ -631,7 +631,7 @@ async function BuscaAPI(URL, metodo) {
 		}, 2000);
 	});
 }
-function BuscaObras() {
+function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO() {
 	DatasetFactory.getDataset("BuscaPermissaoColigadasUsuario", null, [
 		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST)
 	], null, {
