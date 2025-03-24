@@ -1,0 +1,13 @@
+.row.display-flex {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.fluig-style-guide.fluig-toast {
+    width: 80% !important;
+}
+
+.titulo2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
