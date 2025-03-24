@@ -113,7 +113,7 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO();
+		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(relatorio == "Despesas Econômicas" ? true:false);
 	} else {
 		$("#divDespesasFinanceiro").slideUp();
 	}
@@ -256,6 +256,24 @@ function GeraDespesasObra() {
 	});
 }
 function GeraDespesasEconomicasObra(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:25
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:999
+		},
+	};
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -265,8 +283,8 @@ function GeraDespesasEconomicasObra(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 25, 25, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -631,20 +649,58 @@ async function BuscaAPI(URL, metodo) {
 		}, 2000);
 	});
 }
-function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO() {
+function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaPorColigada = null) {
 	DatasetFactory.getDataset("BuscaPermissaoColigadasUsuario", null, [
-		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST)
+		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST),
+		DatasetFactory.createConstraint("permissaoGeral", "true", "true", ConstraintType.MUST),
 	], null, {
 		success: (ds => {
-			$("#selectCCUSTO").html("<option></option>");
-			ds.values.forEach(ccusto => {
-				if (ccusto.CODCOLIGADA == 1) {
-					$("#selectCCUSTO").append("<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>");
-				}
-			});
-			$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
+			if (!listaPorColigada) {
+				// Se não lista Centro de Custo por Coligada
+				// Monta as opções do <select> somente com os CCusto da Coligada 1
+				MontaHTMLCentroCustoColigadaEngenharia();
+			} else {
+				// Se lista Centro de Custo por Coligada
+				// Monta as opções do <select> das Coligadas 1 e 12 e agrupa os CCusto no <optgroup> que informa qual a Coligada desse CCUSTO
+				MontaHTMLCentroCustoColigadas_1_12();
+			}
 		})
 	});
+
+
+	function MontaHTMLCentroCustoColigadaEngenharia(){
+		$("#selectCCUSTO").html("<option></option>");
+		ds.values.forEach(ccusto => {
+			if (ccusto.CODCOLIGADA == 1) {
+				$("#selectCCUSTO").append("<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>");
+			}
+		});
+		$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
+	}
+	function MontaHTMLCentroCustoColigadas_1_12(){
+		$("#selectCCUSTO").html("<option></option>");
+				var CCUSTO_CASTILHO = "";
+				var CCUSTO_DROMOS = "";
+
+
+				ds.values.forEach(ccusto => {
+					if (ccusto.CODCOLIGADA == 1) {	
+						CCUSTO_CASTILHO += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
+					if (ccusto.CODCOLIGADA == 12) {	
+						CCUSTO_DROMOS += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
+				});
+
+				if (CCUSTO_CASTILHO) {
+					$("#selectCCUSTO").append(`<optgroup label="CONSTRUTORA CASTILHO">${CCUSTO_CASTILHO}</optgroup>`);
+				}
+				if (CCUSTO_DROMOS) {
+					$("#selectCCUSTO").append(`<optgroup label="DROMOS INFRA">${CCUSTO_DROMOS}</optgroup>`);
+				}
+
+				$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
+	}
 }
 function IniciaCamposDeData() {
 	$("#dataInicioCompromissosCadastrados").val(moment().startOf('month').format("DD/MM/YYYY"));
