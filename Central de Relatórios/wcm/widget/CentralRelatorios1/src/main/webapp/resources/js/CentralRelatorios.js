@@ -113,7 +113,9 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(relatorio == "Despesas Econômicas" ? true:false);
+		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra") ? true:false;
+
+		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaCCustoPorColigada);
 	} else {
 		$("#divDespesasFinanceiro").slideUp();
 	}
@@ -265,7 +267,7 @@ function GeraDespesasEconomicasObra(codccusto, usuario, email) {
 		"DROMOS INFRA":{
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
-			idFormulaDespesasEconomicas:999
+			idFormulaDespesasEconomicas:5
 		},
 	};
 	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
@@ -346,6 +348,25 @@ function GeraControleFaturamento(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraCustoMaoDeObra(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:29
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:6
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -355,8 +376,8 @@ function GeraCustoMaoDeObra(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 29, 29, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -658,17 +679,17 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 			if (!listaPorColigada) {
 				// Se não lista Centro de Custo por Coligada
 				// Monta as opções do <select> somente com os CCusto da Coligada 1
-				MontaHTMLCentroCustoColigadaEngenharia();
+				MontaHTMLCentroCustoColigadaEngenharia(ds);
 			} else {
 				// Se lista Centro de Custo por Coligada
 				// Monta as opções do <select> das Coligadas 1 e 12 e agrupa os CCusto no <optgroup> que informa qual a Coligada desse CCUSTO
-				MontaHTMLCentroCustoColigadas_1_12();
+				MontaHTMLCentroCustoColigadas_1_12(ds);
 			}
 		})
 	});
 
 
-	function MontaHTMLCentroCustoColigadaEngenharia(){
+	function MontaHTMLCentroCustoColigadaEngenharia(ds){
 		$("#selectCCUSTO").html("<option></option>");
 		ds.values.forEach(ccusto => {
 			if (ccusto.CODCOLIGADA == 1) {
@@ -677,7 +698,7 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 		});
 		$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
 	}
-	function MontaHTMLCentroCustoColigadas_1_12(){
+	function MontaHTMLCentroCustoColigadas_1_12(ds){
 		$("#selectCCUSTO").html("<option></option>");
 				var CCUSTO_CASTILHO = "";
 				var CCUSTO_DROMOS = "";
