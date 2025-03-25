@@ -113,7 +113,7 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Controle de Faturamento") ? true:false;
+		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Controle de Faturamento" || relatorio == "Ordens Pendentes") ? true:false;
 
 		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaCCustoPorColigada);
 	} else {
@@ -475,6 +475,25 @@ function GeraCompromissosGerenciais(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraOrdensPendentes(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:34
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:11
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -484,8 +503,8 @@ function GeraOrdensPendentes(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 34, 34, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada",CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -510,9 +529,10 @@ function GeraOrdensPendentes(codccusto, usuario, email) {
 
 	//console.log(xml);
 }
-function GeraCompromissosCadastrados(opcao) {
+function GeraCompromissosCadastrados(opcaoTipoRelatorio) {
 	var dtInicio = $("#dataInicioCompromissosCadastrados").val();
 	var dtFim = $("#dataFimCompromissosCadastrados").val();
+	var coligada = $("#coligadaCompromissosCadastrados").val();
 
 	if (dtInicio == "" || dtInicio == null) {
 		FLUIGC.toast({
@@ -524,6 +544,13 @@ function GeraCompromissosCadastrados(opcao) {
 	else if (dtFim == "" || dtFim == null) {
 		FLUIGC.toast({
 			message: "Data fim não preenchida!",
+			type: "warning"
+		});
+		loading.hide();
+	}
+	else if(coligada == "" || coligada == null){
+		FLUIGC.toast({
+			message: "Coligada não selecionada!",
 			type: "warning"
 		});
 		loading.hide();
@@ -559,24 +586,18 @@ function GeraCompromissosCadastrados(opcao) {
 				} else {
 					var xml =
 						"<PARAM>\
-						<DATAINI>" + DATAINI + "</DATAINI>\
-						<DATAFIM>" + DATAFIM + "</DATAFIM>\
-						<USUARIO>" + user + "</USUARIO>\
-						<EMAIL>" + mail + "</EMAIL>\
-					</PARAM>";
+							<DATAINI>" + DATAINI + "</DATAINI>\
+							<DATAFIM>" + DATAFIM + "</DATAFIM>\
+							<USUARIO>" + user + "</USUARIO>\
+							<EMAIL>" + mail + "</EMAIL>\
+						</PARAM>";
 
-					var idFormulaVisual = null;
-					if (opcao == 1) {
-						// Compromissos Cadastrados
-						idFormulaVisual = 22;
-					} else if (opcao == 2) {
-						// Compromissos Cadastrados (FFCX/RDV/RDO)
-						idFormulaVisual = 27;
-					}
+					var idFormulaVisual = buscaIdFormulaVisual(opcaoTipoRelatorio, coligada);
+				
 
 					DatasetFactory.getDataset("ExecutaRelatorio", null, [
 						DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-						DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
+						DatasetFactory.createConstraint("pCodColigada", coligada, coligada, ConstraintType.MUST),
 						DatasetFactory.createConstraint("pIdFormula", idFormulaVisual, idFormulaVisual, ConstraintType.MUST)
 					], null, {
 						success: (retorno => {
@@ -617,6 +638,27 @@ function GeraCompromissosCadastrados(opcao) {
 				loading.hide();
 			}
 		})
+	}
+
+	function buscaIdFormulaVisual(opcaoTipoRelatorio, coligada){
+		const formulasVisuais = {
+			1 : {
+				NOME : "Compromissos Cadastrados por Centro de Custo",
+				idPorColigada : {
+					1:22,
+					12:9
+				}
+			},
+			2 : {
+				NOME : "Compromissos Cadastrados (FFCX/RDV/RDO)",
+				idPorColigada : {
+					1:27,
+					12:10
+				}
+			}
+		};
+		var idFormulaVisual = formulasVisuais[opcaoTipoRelatorio].idPorColigada[coligada];
+		return idFormulaVisual;
 	}
 }
 

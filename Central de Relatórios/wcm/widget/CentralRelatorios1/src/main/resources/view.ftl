@@ -32,6 +32,14 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
+                        <label for="coligadaCompromissosCadastrados">Coligada:</label>
+                        <select name="coligadaCompromissosCadastrados" id="coligadaCompromissosCadastrados" class="^form-control">
+                            <option value=""></option>
+                            <option value="1">1 - CONSTRUTORA CASTILHO</option>
+                            <option value="12">12 - DROMOS INFRA</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 col-xs-12" style="margin-bottom: 10px">
                         <label for="dataInicioCompromissosCadastrados">Data Início:</label>
                         <input type="text" name="dataInicioCompromissosCadastrados" id="dataInicioCompromissosCadastrados" class="form-control" />
                     </div>
