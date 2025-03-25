@@ -113,7 +113,7 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais") ? true:false;
+		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Controle de Faturamento") ? true:false;
 
 		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaCCustoPorColigada);
 	} else {
@@ -321,7 +321,7 @@ function GeraControleFaturamento(codccusto, usuario, email) {
 		"DROMOS INFRA":{
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
-			idFormulaDespesasEconomicas:6
+			idFormulaDespesasEconomicas:8
 		},
 	};
 
