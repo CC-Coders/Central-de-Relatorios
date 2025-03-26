@@ -751,7 +751,6 @@ async function BuscaAPI(URL, metodo) {
 function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaPorColigada = null) {
 	DatasetFactory.getDataset("BuscaPermissaoColigadasUsuario", null, [
 		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST),
-		DatasetFactory.createConstraint("permissaoGeral", "true", "true", ConstraintType.MUST),
 	], null, {
 		success: (ds => {
 			if (!listaPorColigada) {
