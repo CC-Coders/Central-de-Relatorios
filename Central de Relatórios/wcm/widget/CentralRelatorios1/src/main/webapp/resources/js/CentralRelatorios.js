@@ -113,7 +113,9 @@ function AlteraRelatorio(relatorio) {
 
 	if (relatorio == "Despesas Econômicas" || relatorio == "Controle de Faturamento" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Ordens Pendentes") {
 		$("#divDespesasFinanceiro").slideDown();
-		BuscaObras();
+		var listaCCustoPorColigada = (relatorio == "Despesas Econômicas" || relatorio == "Custos Mão de Obra" || relatorio == "Compromissos Gerenciais" || relatorio == "Controle de Faturamento" || relatorio == "Ordens Pendentes") ? true:false;
+
+		BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaCCustoPorColigada);
 	} else {
 		$("#divDespesasFinanceiro").slideUp();
 	}
@@ -256,6 +258,24 @@ function GeraDespesasObra() {
 	});
 }
 function GeraDespesasEconomicasObra(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:25
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:5
+		},
+	};
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -265,8 +285,8 @@ function GeraDespesasEconomicasObra(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 25, 25, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -292,6 +312,24 @@ function GeraDespesasEconomicasObra(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraControleFaturamento(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:26
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:8
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -301,8 +339,8 @@ function GeraControleFaturamento(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 26, 26, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -328,6 +366,25 @@ function GeraControleFaturamento(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraCustoMaoDeObra(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:29
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:6
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -337,8 +394,8 @@ function GeraCustoMaoDeObra(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 29, 29, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -364,6 +421,24 @@ function GeraCustoMaoDeObra(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraCompromissosGerenciais(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:30
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:7
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -373,8 +448,8 @@ function GeraCompromissosGerenciais(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 30, 30, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada", CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -400,6 +475,25 @@ function GeraCompromissosGerenciais(codccusto, usuario, email) {
 	//console.log(xml);
 }
 function GeraOrdensPendentes(codccusto, usuario, email) {
+	const parametrosPorColigada = {
+		"CONSTRUTORA CASTILHO":{
+			CODCOLIGADA : 1,
+			DESCRICAO:"CONSTRUTORA CASTILHO",
+			idFormulaDespesasEconomicas:34
+		},
+		"DROMOS INFRA":{
+			CODCOLIGADA : 12,
+			DESCRICAO:"DROMOS INFRA",
+			idFormulaDespesasEconomicas:11
+		},
+	};
+
+	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
+	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
+
+	// Busca do "parametrosPorColigada" o JSON correspondente a "coligadaSelecionada"
+	const {CODCOLIGADA, idFormulaDespesasEconomicas} = parametrosPorColigada[coligadaSelecionada];
+
 	var xml =
 		"<PARAM>\
 			<CODCCUSTO>" + codccusto + "</CODCCUSTO>\
@@ -409,8 +503,8 @@ function GeraOrdensPendentes(codccusto, usuario, email) {
 
 	DatasetFactory.getDataset("ExecutaRelatorio", null, [
 		DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
-		DatasetFactory.createConstraint("pIdFormula", 34, 34, ConstraintType.MUST)
+		DatasetFactory.createConstraint("pCodColigada",CODCOLIGADA, CODCOLIGADA, ConstraintType.MUST),
+		DatasetFactory.createConstraint("pIdFormula", idFormulaDespesasEconomicas, idFormulaDespesasEconomicas, ConstraintType.MUST)
 	], null, {
 		success: (retorno => {
 			console.log(retorno);
@@ -435,9 +529,10 @@ function GeraOrdensPendentes(codccusto, usuario, email) {
 
 	//console.log(xml);
 }
-function GeraCompromissosCadastrados(opcao) {
+function GeraCompromissosCadastrados(opcaoTipoRelatorio) {
 	var dtInicio = $("#dataInicioCompromissosCadastrados").val();
 	var dtFim = $("#dataFimCompromissosCadastrados").val();
+	var coligada = $("#coligadaCompromissosCadastrados").val();
 
 	if (dtInicio == "" || dtInicio == null) {
 		FLUIGC.toast({
@@ -449,6 +544,13 @@ function GeraCompromissosCadastrados(opcao) {
 	else if (dtFim == "" || dtFim == null) {
 		FLUIGC.toast({
 			message: "Data fim não preenchida!",
+			type: "warning"
+		});
+		loading.hide();
+	}
+	else if(coligada == "" || coligada == null){
+		FLUIGC.toast({
+			message: "Coligada não selecionada!",
 			type: "warning"
 		});
 		loading.hide();
@@ -484,24 +586,18 @@ function GeraCompromissosCadastrados(opcao) {
 				} else {
 					var xml =
 						"<PARAM>\
-						<DATAINI>" + DATAINI + "</DATAINI>\
-						<DATAFIM>" + DATAFIM + "</DATAFIM>\
-						<USUARIO>" + user + "</USUARIO>\
-						<EMAIL>" + mail + "</EMAIL>\
-					</PARAM>";
+							<DATAINI>" + DATAINI + "</DATAINI>\
+							<DATAFIM>" + DATAFIM + "</DATAFIM>\
+							<USUARIO>" + user + "</USUARIO>\
+							<EMAIL>" + mail + "</EMAIL>\
+						</PARAM>";
 
-					var idFormulaVisual = null;
-					if (opcao == 1) {
-						// Compromissos Cadastrados
-						idFormulaVisual = 22;
-					} else if (opcao == 2) {
-						// Compromissos Cadastrados (FFCX/RDV/RDO)
-						idFormulaVisual = 27;
-					}
+					var idFormulaVisual = buscaIdFormulaVisual(opcaoTipoRelatorio, coligada);
+				
 
 					DatasetFactory.getDataset("ExecutaRelatorio", null, [
 						DatasetFactory.createConstraint("pXML", xml, xml, ConstraintType.MUST),
-						DatasetFactory.createConstraint("pCodColigada", 1, 1, ConstraintType.MUST),
+						DatasetFactory.createConstraint("pCodColigada", coligada, coligada, ConstraintType.MUST),
 						DatasetFactory.createConstraint("pIdFormula", idFormulaVisual, idFormulaVisual, ConstraintType.MUST)
 					], null, {
 						success: (retorno => {
@@ -542,6 +638,27 @@ function GeraCompromissosCadastrados(opcao) {
 				loading.hide();
 			}
 		})
+	}
+
+	function buscaIdFormulaVisual(opcaoTipoRelatorio, coligada){
+		const formulasVisuais = {
+			1 : {
+				NOME : "Compromissos Cadastrados por Centro de Custo",
+				idPorColigada : {
+					1:22,
+					12:9
+				}
+			},
+			2 : {
+				NOME : "Compromissos Cadastrados (FFCX/RDV/RDO)",
+				idPorColigada : {
+					1:27,
+					12:10
+				}
+			}
+		};
+		var idFormulaVisual = formulasVisuais[opcaoTipoRelatorio].idPorColigada[coligada];
+		return idFormulaVisual;
 	}
 }
 
@@ -631,20 +748,56 @@ async function BuscaAPI(URL, metodo) {
 		}, 2000);
 	});
 }
-function BuscaObras() {
+function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(listaPorColigada = null) {
 	DatasetFactory.getDataset("BuscaPermissaoColigadasUsuario", null, [
-		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST)
+		DatasetFactory.createConstraint("usuario", WCMAPI.userCode, WCMAPI.userCode, ConstraintType.MUST),
 	], null, {
 		success: (ds => {
-			$("#selectCCUSTO").html("<option></option>");
-			ds.values.forEach(ccusto => {
-				if (ccusto.CODCOLIGADA == 1) {
-					$("#selectCCUSTO").append("<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>");
-				}
-			});
-			$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
+			if (!listaPorColigada) {
+				// Se não lista Centro de Custo por Coligada
+				// Monta as opções do <select> somente com os CCusto da Coligada 1
+				MontaHTMLCentroCustoColigadaEngenharia(ds);
+			} else {
+				// Se lista Centro de Custo por Coligada
+				// Monta as opções do <select> das Coligadas 1 e 12 e agrupa os CCusto no <optgroup> que informa qual a Coligada desse CCUSTO
+				MontaHTMLCentroCustoColigadas_1_12(ds);
+			}
 		})
 	});
+
+
+	function MontaHTMLCentroCustoColigadaEngenharia(ds){
+		$("#selectCCUSTO").html("<option></option>");
+		ds.values.forEach(ccusto => {
+			if (ccusto.CODCOLIGADA == 1) {
+				$("#selectCCUSTO").append("<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>");
+			}
+		});
+		$("#selectCCUSTO").append("<option value='Todos'>Todos os Centros de Custo</option>");
+	}
+	function MontaHTMLCentroCustoColigadas_1_12(ds){
+		$("#selectCCUSTO").html("<option></option>");
+				var CCUSTO_CASTILHO = "";
+				var CCUSTO_DROMOS = "";
+
+
+				ds.values.forEach(ccusto => {
+					if (ccusto.CODCOLIGADA == 1) {	
+						CCUSTO_CASTILHO += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
+					if (ccusto.CODCOLIGADA == 12) {	
+						CCUSTO_DROMOS += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
+				});
+
+				if (CCUSTO_CASTILHO) {
+					$("#selectCCUSTO").append(`<optgroup label="CONSTRUTORA CASTILHO">${CCUSTO_CASTILHO} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
+				}
+				if (CCUSTO_DROMOS) {
+					$("#selectCCUSTO").append(`<optgroup label="DROMOS INFRA">${CCUSTO_DROMOS} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
+				}
+
+	}
 }
 function IniciaCamposDeData() {
 	$("#dataInicioCompromissosCadastrados").val(moment().startOf('month').format("DD/MM/YYYY"));
