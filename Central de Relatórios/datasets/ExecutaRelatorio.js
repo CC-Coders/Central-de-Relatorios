@@ -35,7 +35,7 @@ function createDataset(fields, constraints, sortFields) {
         var wsObj = serviceLocator.getRMIwsFormulaVisual();
     
         var authService = serviceHelper.getBasicAuthenticatedClient(wsObj, "com.totvs.IwsFormulaVisual", "fluig", "flu!g@cc#2018");
-        var ret = authService.execute(pCodColigada, pIdFormula, "CODCOLIGADA=1", "", pXML, "");
+        var ret = authService.execute(pCodColigada, pIdFormula, "CODCOLIGADA="+pCodColigada, "", pXML, "");
         log.info("Retorno wsFormulaVisual: " + ret);
         return ret;
     }else{
