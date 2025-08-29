@@ -322,6 +322,11 @@ function GeraCustoMaoDeObra(codccusto, usuario, email) {
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:6
 		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:12
+		},
 	};
 
 	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
@@ -376,6 +381,11 @@ function GeraCompromissosGerenciais(codccusto, usuario, email) {
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:7
+		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:4
 		},
 	};
 
@@ -591,7 +601,8 @@ function GeraCompromissosCadastrados(opcaoTipoRelatorio) {
 				NOME : "Compromissos Cadastrados por Centro de Custo",
 				idPorColigada : {
 					1:22,
-					12:9
+					12:9,
+					13:6
 				}
 			},
 			2 : {
@@ -724,6 +735,7 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 		$("#selectCCUSTO").html("<option></option>");
 				var CCUSTO_CASTILHO = "";
 				var CCUSTO_DROMOS = "";
+				var CCUSTO_EPYA = "";
 
 
 				ds.values.forEach(ccusto => {
@@ -733,6 +745,9 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 					if (ccusto.CODCOLIGADA == 12) {	
 						CCUSTO_DROMOS += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
 					}
+					if (ccusto.CODCOLIGADA == 13) {	
+						CCUSTO_EPYA += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
 				});
 
 				if (CCUSTO_CASTILHO) {
@@ -740,6 +755,9 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 				}
 				if (CCUSTO_DROMOS) {
 					$("#selectCCUSTO").append(`<optgroup label="DROMOS INFRA">${CCUSTO_DROMOS} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
+				}
+				if (CCUSTO_EPYA) {
+					$("#selectCCUSTO").append(`<optgroup label="EPYA">${CCUSTO_EPYA} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
 				}
 
 	}
