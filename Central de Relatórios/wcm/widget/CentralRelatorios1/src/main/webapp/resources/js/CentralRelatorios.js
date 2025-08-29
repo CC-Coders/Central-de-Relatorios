@@ -58,16 +58,10 @@ async function VerificaPermissoes() {
 		BuscaRelatoriosMatriz();
 	}
 	else {
-	
 		var PermissaoChefeEscritorio = await VerificaSeUsuarioPertenceAosGrupos(WCMAPI.userCode, ["Chefes de Escritório"]);
 		console.log("CHEFE = "+PermissaoChefeEscritorio.length);
 		
-		if (PermissaoChefeEscritorio.length > 0) {
-			
-			//	for (var x = 0; x < PermissaoChefeEscritorio.length; x++) {
-			//	var chefe = PermissaoChefeEscritorio.getValue(x, "colleagueGroupPK.colleagueId");
-			//	log.info("CHEFE: " + chefe + " - NUM: "+ x);
-				
+		if (PermissaoChefeEscritorio.length > 0) {				
 			var PermissaoCentral = await VerificaSeUsuarioPertenceAosGrupos(WCMAPI.userCode, ["Central%"]);
 			console.log("CENTRAL = "+PermissaoCentral.length);
 			
@@ -95,13 +89,6 @@ async function VerificaPermissoes() {
 		}
 
 	}
-	/*var PermissaoEngenheiroOuChefe = await VerificaSeUsuarioPertenceAosGrupos(WCMAPI.userCode, ["Engenheiros", "Chefes de Escritório"]);
-	if (PermissaoEngenheiroOuChefe.length > 0) {
-		//Se Usuário Eng ou Chefe
-		$("#selectRelatorio").append("<option value='Despesas Econômicas'>Despesas Econômicas</option>")
-		$("#selectRelatorio").append("<option value='Controle de Faturamento'>Controle de Faturamento</option>")
-		$("#selectRelatorio").append("<option value='Custos Mão de Obra'>Custos Mão de Obra</option>")
-	}*/
 }
 function AlteraRelatorio(relatorio) {
 	if (relatorio == "Compromissos Cadastrados por Centro de Custo" || relatorio == "Compromissos Cadastrados (FFCX/RDV/RDO)") {
@@ -167,23 +154,6 @@ async function GerarRelatorio() {
 
 // Lista Relatorios
 function BuscaRelatoriosMatriz() {
-	/*DatasetFactory.getDataset("BuscaRelatorios", null, [
-		DatasetFactory.createConstraint("Matriz", "true", "true", ConstraintType.MUST)
-	], null, {
-		success: (ds => {
-			ds.values.forEach(relatorio => {
-				$("#selectRelatorio").append("<option value='" + relatorio.NOME + "'>" + relatorio.NOME + "</option>");
-			})
-		}),
-		error: (error => {
-			console.error(error);
-			FLUIGC.toast({
-				message: "Erro ao verificar as permissões do usuário, favor entrar em contato com o Administrador do Sistema.",
-				type: "warning"
-			});
-		})
-	})*/
-
 	$("#selectRelatorio").append("<optgroup label='ACOMPANHAMENTO GERENCIAL DE OBRAS'></optgroup>");
 	$("#selectRelatorio").append("<option value='Compromissos Gerenciais'>Compromissos Gerenciais</option>");
 	$("#selectRelatorio").append("<option value='Controle de Faturamento'>Controle de Faturamento</option>");
@@ -193,29 +163,9 @@ function BuscaRelatoriosMatriz() {
 	$("#selectRelatorio").append("<option value='Compromissos Cadastrados por Centro de Custo'>Compromissos Cadastrados por Centro de Custo</option>");
 	$("#selectRelatorio").append("<option value='Compromissos Cadastrados (FFCX/RDV/RDO)'>Compromissos Cadastrados (FFCX/RDV/RDO)</option>");
 	$("#selectRelatorio").append("<option value='Ordens Pendentes'>Ordens Pendentes (Follow-up)</option>");
-
 }
 function BuscaRelatoriosObra() {
-	/*DatasetFactory.getDataset("BuscaRelatorios", null, [
-		DatasetFactory.createConstraint("Obra", "true", "true", ConstraintType.MUST)
-	], null, {
-		success: (ds => {
-			console.log(ds)
-			ds.values.forEach(relatorio => {
-				$("#selectRelatorio").append("<option value='" + relatorio.NOME + "'>" + relatorio.NOME + "</option>");
-			})
-		}),
-		error: (error => {
-			console.error(error);
-			FLUIGC.toast({
-				message: "Erro ao verificar as permissões do usuário, favor entrar em contato com o Administrador do Sistema.",
-				type: "warning"
-			});
-		})
-	})
-	*/
 	$("#selectRelatorio").html("<option></option>");
-	
 	$("#selectRelatorio").append("<optgroup label='RELATÓRIOS DIÁRIOS'></optgroup>");	
 	$("#selectRelatorio").append("<option value='Compromissos Cadastrados por Centro de Custo'>Compromissos Cadastrados por Centro de Custo</option>");
 	$("#selectRelatorio").append("<option value='Compromissos Cadastrados (FFCX/RDV/RDO)'>Compromissos Cadastrados (FFCX/RDV/RDO)</option>");
@@ -243,18 +193,13 @@ function GeraDespesasObra() {
 		success: (ds => {
 			var mail = ds.values[0].mail;
 
-
 			var xml =
 				"<PARAM>\
 				<USUARIO>" + user + "</USUARIO>\
 				<EMAIL>" + mail + "</EMAIL>\
 				<CCUSTO>" + $("#selectCCUSTO").val() + "</CCUSTO>\
 			</PARAM>";
-
-			//console.log(xml);
 		})
-
-
 	});
 }
 function GeraDespesasEconomicasObra(codccusto, usuario, email) {
@@ -377,6 +322,11 @@ function GeraCustoMaoDeObra(codccusto, usuario, email) {
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:6
 		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:12
+		},
 	};
 
 	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
@@ -431,6 +381,11 @@ function GeraCompromissosGerenciais(codccusto, usuario, email) {
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:7
+		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:4
 		},
 	};
 
@@ -646,7 +601,8 @@ function GeraCompromissosCadastrados(opcaoTipoRelatorio) {
 				NOME : "Compromissos Cadastrados por Centro de Custo",
 				idPorColigada : {
 					1:22,
-					12:9
+					12:9,
+					13:6
 				}
 			},
 			2 : {
@@ -779,6 +735,7 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 		$("#selectCCUSTO").html("<option></option>");
 				var CCUSTO_CASTILHO = "";
 				var CCUSTO_DROMOS = "";
+				var CCUSTO_EPYA = "";
 
 
 				ds.values.forEach(ccusto => {
@@ -788,6 +745,9 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 					if (ccusto.CODCOLIGADA == 12) {	
 						CCUSTO_DROMOS += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
 					}
+					if (ccusto.CODCOLIGADA == 13) {	
+						CCUSTO_EPYA += "<option value='" + ccusto.CODCCUSTO + "'>" + ccusto.CODCCUSTO + " - " + ccusto.perfil + "</option>";
+					}
 				});
 
 				if (CCUSTO_CASTILHO) {
@@ -795,6 +755,9 @@ function BuscaObrasComBaseNasPermissoesDoUsuarioEListaNoCampo_selectCCUSTO(lista
 				}
 				if (CCUSTO_DROMOS) {
 					$("#selectCCUSTO").append(`<optgroup label="DROMOS INFRA">${CCUSTO_DROMOS} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
+				}
+				if (CCUSTO_EPYA) {
+					$("#selectCCUSTO").append(`<optgroup label="EPYA">${CCUSTO_EPYA} <option value='Todos'>Todos os Centros de Custo</option> </optgroup>`);
 				}
 
 	}
