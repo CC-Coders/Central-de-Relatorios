@@ -214,6 +214,11 @@ function GeraDespesasEconomicasObra(codccusto, usuario, email) {
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:5
 		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:14
+		},
 	};
 	// Busca a Label do optgroup da opção selecionada no formulário (CONSTRUTORA CASTILHO ou DROMOS INFRA)
 	const coligadaSelecionada = $("#selectCCUSTO").find("option:selected").closest("optgroup").attr("label");
@@ -267,6 +272,11 @@ function GeraControleFaturamento(codccusto, usuario, email) {
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:8
+		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:16
 		},
 	};
 
@@ -440,6 +450,11 @@ function GeraOrdensPendentes(codccusto, usuario, email) {
 			CODCOLIGADA : 12,
 			DESCRICAO:"DROMOS INFRA",
 			idFormulaDespesasEconomicas:11
+		},
+		"EPYA":{
+			CODCOLIGADA : 13,
+			DESCRICAO:"EPYA",
+			idFormulaDespesasEconomicas:18
 		},
 	};
 
